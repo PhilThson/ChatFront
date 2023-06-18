@@ -1,0 +1,1 @@
+export const BASE_API_URL = 'http://localhost:5186/api/';//'https://localhost:7027/api/';
