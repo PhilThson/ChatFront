@@ -16,12 +16,14 @@ const Login = ({ setUsername, setLoggedIn }) => {
         Username: usernameInput,
         Password: passwordInput
       });
+      
+      const { jwtToken, refreshToken } = response.data;
 
-      const { JwtToken, RefreshToken } = response.data;
-      localStorage.setItem('token', JwtToken);
+      localStorage.setItem('token', jwtToken);
       setUsername(usernameInput);
       setLoggedIn(true);
       navigate('/');
+
     } catch (error) {
       console.error(error);
     }

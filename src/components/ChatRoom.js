@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { BASE_API_URL } from '../settings/constants';
+import { BASE_API_URL, BASE_HUB_URL } from '../settings/constants';
 import useRooms from '../hooks/useRooms';
+import { HubConnectionBuilder } from '@microsoft/signalr';
 
 const ChatRoom = ({ username }) => {
   const [roomId, setRoomId] = useState(null);
@@ -10,7 +11,28 @@ const ChatRoom = ({ username }) => {
 
   const allRooms = useRooms();
 
+  const hubConnection = new HubConnectionBuilder()
+    .withUrl(BASE_HUB_URL)
+    .withAutomaticReconnect()
+    .build();
+
+  useEffect(() => {
+    if (roomId) {
+      // Start the SignalR connection
+      hubConnection.start().catch((error) => console.error(error));
+
+      // Listen for ReceiveMessage event
+      hubConnection.on('ReceiveMessage', (receivedMessage) => {
+        setMessages((prevMessages) => [...prevMessages, receivedMessage]);
+      });
+    } else {
+      // Room is not selected, stop the SignalR connection
+      hubConnection.stop();
+    }
+  }, [roomId]);
+
   const handleJoinRoom = (id) => {
+    console.log("Joing choosen room...");
     setRoomId(id);
     // Connect to SignalR hub and join the selected room
   };
@@ -19,17 +41,39 @@ const ChatRoom = ({ username }) => {
     e.preventDefault();
 
     try {
-      const response = await axios.post(`${BASE_API_URL}send-message`, {
-        roomId: roomId,
-        message: message
-      }, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`
+      const response = await axios.post(
+        `${BASE_API_URL}message`,
+        {
+          roomId: roomId,
+          message: message
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`
+          }
         }
+      );
+
+      // Expecting the response to be the newly sent message
+      const { content, roomId, user } = response.data;;
+
+      // Send the message using SignalR
+      hubConnection.invoke('SendMessage', {
+        content: content,
+        roomId: roomId,
+        username: user.name
       });
 
+      const newMessage = {
+        content: content,
+        username: user.name
+      }
+
       // Add the new message to the list of messages
-      setMessages([...messages, response.data]);
+      setMessages((prevMessages) => [...prevMessages, newMessage]);
+
+      // Send the message using SignalR
+      hubConnection.invoke('SendMessage', newMessage);
 
       // Clear the message input field
       setMessage('');
@@ -43,12 +87,11 @@ const ChatRoom = ({ username }) => {
       <h2>Welcome, {username}!</h2>
       <h3>Select a chat room:</h3>
       <ul>
-        {allRooms.map(id => (
-            <li key={id} onClick={handleJoinRoom}></li>
+        {allRooms.map((room) => (
+            <li key={room.id} onClick={() => handleJoinRoom(room.id)}>
+              {room.name}
+            </li>
           ))}
-        {/* <li onClick={() => handleJoinRoom(1)}>Room 1</li>
-        <li onClick={() => handleJoinRoom(2)}>Room 2</li>
-        <li onClick={() => handleJoinRoom(3)}>Room 3</li> */}
       </ul>
 
       {roomId && (
