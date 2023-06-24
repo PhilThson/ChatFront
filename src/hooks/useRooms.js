@@ -1,27 +1,21 @@
 import { useState, useEffect } from "react";
 import { BASE_API_URL } from '../settings/constants';
-import axios from 'axios';
+import useGetRequest from '../hooks/useGetRequest';
 
 const useRooms = () =>
 {
   const [allRooms, setRooms] = useState([]);
+  const { get, loadingState } = useGetRequest(`${BASE_API_URL}room`);
+
   useEffect(() => {
     const fetchRooms = async () => {
-      try {
-        const response = await axios.get(`${BASE_API_URL}room`, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`
-          }
-        });
-        setRooms(response.data);
-      } catch (error) {
-        console.error(error);
-      }
+      const rooms = await get();
+      setRooms(rooms);
     };
     fetchRooms();
-  }, []);
+  }, [get]);
 
-  return allRooms;
+  return { allRooms, loadingState };
 }
 
 export default useRooms;
