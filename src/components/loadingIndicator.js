@@ -1,5 +1,5 @@
-const loadingIndicator = ({ loadingState }) => {
+const LoadingIndicator = ({ loadingState }) => {
   return <h3>{ loadingState }</h3>;
 };
 
-export default loadingIndicator;
+export default LoadingIndicator;

@@ -46,3 +46,9 @@
   font-size: x-large;
   color: coral;
 }
+
+/*Overload bootstrap styles*/
+input.form-control:focus,
+.form-select:focus {
+    box-shadow: none;
+}

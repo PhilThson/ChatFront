@@ -1,29 +1,23 @@
 import './App.css';
-import React, { useState } from 'react';
 import { Route, Routes, Navigate } from "react-router-dom";
 import Login from '../components/Login';
 import ChatRoom from '../components/ChatRoom';
+import Rooms from '../components/Rooms'
 import Header from './Header';
+import { UserProvider } from '../context/UserDataContext';
 
 const App = () => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [loggedIn, setLoggedIn] = useState(false);
-
   return (
     <div className="container">
-      <Header subtitle="Chat application" />
-      <Routes>
-        <Route path="/login" 
-          element={
-          <Login setUsername={setUsername} setLoggedIn={setLoggedIn} />} />
-        <Route
-          path="/"
-          element={loggedIn 
-            ? <ChatRoom username={username} /> 
-            : <Navigate to="/login" />}
-        />
-      </Routes>
+      <UserProvider>
+        <Header subtitle="Chat application" />
+        <Routes>
+          <Route exact path="/" element={<Navigate to="/login" />} /> 
+          <Route path="/login" element={<Login />} />
+          <Route path="/rooms/{id}" element={<ChatRoom />} />
+          <Route exact path="/rooms" element={<Rooms />} />
+        </Routes>
+      </UserProvider>
     </div>
   );
 };

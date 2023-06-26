@@ -1,18 +1,13 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useContext, useParams } from 'react';
 import { BASE_HUB_URL } from '../settings/constants';
-import useRooms from '../hooks/useRooms';
 import { HubConnectionBuilder } from '@microsoft/signalr';
-import loadingStatus from '../helpers/loadingStatus';
-import LoadingIndicator from './loadingIndicator';
+import { UserDataContext } from '../context/UserDataContext';
 
-const ChatRoom = ({ username }) => {
-  //bez podawania inicjalizatora w hooku useState,
-  //zmienna przyjmie wartosc undefined
-  const [roomId, setRoomId] = useState(null);
+const ChatRoom = () => {
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
-
-  const { allRooms, loadingState } = useRooms();
+  const { userData } = useContext(UserDataContext);
+  const { id } = useParams();
   const hubConnectionRef = useRef(null);
 
   const addMessageToList = (receivedMessage) => {
@@ -20,11 +15,11 @@ const ChatRoom = ({ username }) => {
   };
 
   useEffect(() => {
-    if (roomId) {
+    if (id) {
       const startHubConnection = async () => {
         hubConnectionRef.current = new HubConnectionBuilder()
           .withUrl(BASE_HUB_URL, { 
-            accessTokenFactory: () => localStorage.getItem('token')
+            accessTokenFactory: () => userData.jwtToken
           })
           .withAutomaticReconnect()
           .build();
@@ -40,16 +35,7 @@ const ChatRoom = ({ username }) => {
         hubConnectionRef.current.stop();
       }
     }
-  }, [roomId]);
-
-  if (loadingState !== loadingStatus.loaded)
-    return <LoadingIndicator loadingState={loadingState} />;
-
-  const handleJoinRoom = (id) => {
-    console.log("Joing choosen room...");
-    setRoomId(id);
-    // Connect to SignalR hub and join the selected room
-  };
+  }, [id]);
 
   const handleSendMessage = async (e) => {
     e.preventDefault();
@@ -59,10 +45,9 @@ const ChatRoom = ({ username }) => {
         //username: user.name
         roomId: 1,
         message: message,
-        username: username
+        username: userData.name
       }
-
-      // Send the message using SignalR
+      
       hubConnectionRef.current.invoke('SendMessage', newMessage)
         .then(() => {
           setMessage('');
@@ -76,19 +61,10 @@ const ChatRoom = ({ username }) => {
 
   return (
     <div>
-      <h2>Welcome, {username}!</h2>
-      <h3>Select a chat room:</h3>
-      <ul>
-        {allRooms.map((room) => (
-            <li key={room.id} onClick={() => handleJoinRoom(room.id)}>
-              {room.name}
-            </li>
-          ))}
-      </ul>
-
-      {roomId && (
+      <h2>Welcome, {userData.name}!</h2>
+      {id && (
         <>
-          <h4>Room {roomId}</h4>
+          <h4>Room {id}</h4>
           <form onSubmit={handleSendMessage}>
             <input
               type="text"
@@ -98,10 +74,11 @@ const ChatRoom = ({ username }) => {
             />
             <button type="submit">Send</button>
           </form>
-          <ul>
+          <ul className='list-group'>
             {messages.map((msg, index) => (
               <li key={index} className={
-                `${msg.username.toLowerCase() === 'system' ? "fst-italic" : ""}`}>
+                `${msg.username.toLowerCase() === 'system' 
+                ? "fst-italic" : ""}`}>
                 <strong>{msg.username}</strong>: {msg.message}
               </li>
             ))}

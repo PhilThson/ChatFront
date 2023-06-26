@@ -1,31 +1,25 @@
-import { useState, useCallback } from "react";
-import loadingStatus from '../helpers/loadingStatus';
+import { useState, useCallback, useContext } from "react";
+import loadingStatusDict from '../helpers/loadingStatusDict';
+import { UserDataContext } from '../context/UserDataContext';
 
 const useGetRequest = (url) => {
+  const { userData } = useContext(UserDataContext);
   const [loadingState, setLoadingState] = 
-    useState(loadingStatus.isLoading);
+    useState(loadingStatusDict.isLoading);
 
-  //z racji na to ze funkcja get jest parametrem do
-  //hooka useEffect przy pobieraniu pokoi, to musi ona
-  //pozostać niezmienna - funkcja jest zwyklym obiektem, 
-  //przekazywanym przez wartosc, a nie przez referencje
-
-  //rozwiazaniem jest uzycie hooka useCallback!
-  //stad funkcja pozostanie niezmienna referencyjnie,
-  //dopoki nie zostanie zmieniony adres Url
   const get = useCallback(async () => {
-    setLoadingState(loadingStatus.isLoading);
+    setLoadingState(loadingStatusDict.isLoading);
     try {
       const response = await fetch(url, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`
+          Authorization: `Bearer ${userData.jwtToken}`
         }
       });
       const result = await response.json();
-      setLoadingState(loadingStatus.loaded);
+      setLoadingState(loadingStatusDict.loaded);
       return result;
     } catch {
-      setLoadingState(loadingStatus.hasError);
+      setLoadingState(loadingStatusDict.hasError);
     }
   }, [url]);
 
