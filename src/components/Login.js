@@ -1,8 +1,9 @@
-import React, { useState, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useContext, useEffect } from 'react';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { BASE_API_URL } from '../settings/constants';
 import { UserDataContext } from '../context/UserDataContext';
+import ValidationMessage from './ValidationMessage';
 
 const Login = () => {
   const initValue = {
@@ -12,7 +13,16 @@ const Login = () => {
 
   const navigate = useNavigate();
   const [userCreds, setUserCreds] = useState(initValue);
+  const [alertMessage, setAlertMessage] = useState('');
   const { setUserContext } = useContext(UserDataContext);
+  const [searchParams] = useSearchParams();
+
+  useEffect(() => {
+    const alert = searchParams.get('alert');
+    if (alert) {
+      setAlertMessage("Proszę się zalogować");
+    }
+  }, [searchParams, setAlertMessage]);
 
   const onChange = (e) => {
     e.preventDefault();
@@ -40,44 +50,47 @@ const Login = () => {
   };
 
   return (
-    <form onSubmit={handleLogin}>
-      <div className='mt-3 mb-3'>
-        <div className='row'>
-          <div className='col-3'>
-            <label className='form-label'>Name:</label>
-            <input
-              id='username'
-              type="text"
-              className='form-control'
-              placeholder="Username"
-              value={userCreds.username}
-              onChange={onChange}
-              required
-            />
+    <>
+      {alertMessage && <ValidationMessage message={alertMessage} />}
+      <form onSubmit={handleLogin}>
+        <div className='mt-3 mb-3'>
+          <div className='row'>
+            <div className='col-3'>
+              <label className='form-label'>Name:</label>
+              <input
+                id='username'
+                type="text"
+                className='form-control'
+                placeholder="Username"
+                value={userCreds.username}
+                onChange={onChange}
+                required
+              />
+            </div>
           </div>
         </div>
-      </div>
-      <div className='mb-3'>
-        <div className='row'>
-          <div className='col-3'>
-            <label className='form-label'>Password:</label>
-            <input
-              id='password'
-              type="password"
-              className='form-control'
-              placeholder="Password"
-              value={userCreds.password}
-              onChange={onChange}
-            />
+        <div className='mb-3'>
+          <div className='row'>
+            <div className='col-3'>
+              <label className='form-label'>Password:</label>
+              <input
+                id='password'
+                type="password"
+                className='form-control'
+                placeholder="Password"
+                value={userCreds.password}
+                onChange={onChange}
+              />
+            </div>
           </div>
         </div>
-      </div>
-      <button 
-        type="submit"
-        className='btn btn-primary'>
-          Login
-      </button>
-    </form>
+        <button 
+          type="submit"
+          className='btn btn-primary'>
+            Login
+        </button>
+      </form>
+    </>
   );
 };
 

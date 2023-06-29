@@ -1,21 +1,19 @@
-import React, { useState, useEffect, useRef, useContext, useParams } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
+import { useParams } from "react-router-dom";
 import { BASE_HUB_URL } from '../settings/constants';
 import { HubConnectionBuilder } from '@microsoft/signalr';
 import { UserDataContext } from '../context/UserDataContext';
+import ValidationMessage from './ValidationMessage';
 
 const ChatRoom = () => {
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
+  const { roomId } = useParams();
   const { userData } = useContext(UserDataContext);
-  const { id } = useParams();
   const hubConnectionRef = useRef(null);
 
-  const addMessageToList = (receivedMessage) => {
-    setMessages((prevMessages) => [...prevMessages, receivedMessage]);
-  };
-
   useEffect(() => {
-    if (id) {
+    if (!isNaN(parseInt(roomId))) {
       const startHubConnection = async () => {
         hubConnectionRef.current = new HubConnectionBuilder()
           .withUrl(BASE_HUB_URL, { 
@@ -35,7 +33,15 @@ const ChatRoom = () => {
         hubConnectionRef.current.stop();
       }
     }
-  }, [id]);
+  }, [roomId]);
+
+  if (roomId === 'undefined' || roomId === 'null') {
+    return <ValidationMessage message={'Nie udało się określić pokoju'}/>
+  }
+
+  const addMessageToList = (receivedMessage) => {
+    setMessages((prevMessages) => [...prevMessages, receivedMessage]);
+  };
 
   const handleSendMessage = async (e) => {
     e.preventDefault();
@@ -62,29 +68,25 @@ const ChatRoom = () => {
   return (
     <div>
       <h2>Welcome, {userData.name}!</h2>
-      {id && (
-        <>
-          <h4>Room {id}</h4>
-          <form onSubmit={handleSendMessage}>
-            <input
-              type="text"
-              placeholder="Enter your message"
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-            />
-            <button type="submit">Send</button>
-          </form>
-          <ul className='list-group'>
-            {messages.map((msg, index) => (
-              <li key={index} className={
-                `${msg.username.toLowerCase() === 'system' 
-                ? "fst-italic" : ""}`}>
-                <strong>{msg.username}</strong>: {msg.message}
-              </li>
-            ))}
-          </ul>
-        </>
-      )}
+      <h4>Room {roomId}</h4>
+      <form onSubmit={handleSendMessage}>
+        <input
+          type="text"
+          placeholder="Enter your message"
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
+        />
+        <button type="submit">Send</button>
+      </form>
+      <ul className='list-group'>
+        {messages.map((msg, index) => (
+          <li key={index} className={
+            `${msg.username.toLowerCase() === 'system' 
+            ? "fst-italic" : ""}`}>
+            <strong>{msg.username}</strong>: {msg.message}
+          </li>
+        ))}
+      </ul>
     </div>
   );
 };

@@ -5,6 +5,9 @@ import ChatRoom from '../components/ChatRoom';
 import Rooms from '../components/Rooms'
 import Header from './Header';
 import { UserProvider } from '../context/UserDataContext';
+import withAuth from '../components/WithAuth';
+
+const ProtectedRoute = withAuth(Route);
 
 const App = () => {
   return (
@@ -14,8 +17,11 @@ const App = () => {
         <Routes>
           <Route exact path="/" element={<Navigate to="/login" />} /> 
           <Route path="/login" element={<Login />} />
-          <Route path="/rooms/{id}" element={<ChatRoom />} />
-          <Route exact path="/rooms" element={<Rooms />} />
+          <Route path="/rooms/:roomId" 
+            element={<ProtectedRoute element={<ChatRoom />} />} />
+          <Route path="/rooms" 
+            element={<ProtectedRoute element={ <Rooms />} />} />
+          <Route path="/*" element={<Navigate to="/login" />} />
         </Routes>
       </UserProvider>
     </div>
