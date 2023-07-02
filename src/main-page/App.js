@@ -1,30 +1,28 @@
 import './App.css';
-import { Route, Routes, Navigate } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
+import Layout from '../components/Layout';
+import Home from '../components/Home';
 import Login from '../components/Login';
 import ChatRoom from '../components/ChatRoom';
 import Rooms from '../components/Rooms'
-import Header from './Header';
-import { UserProvider } from '../context/UserDataContext';
-import withAuth from '../components/WithAuth';
-
-const ProtectedRoute = withAuth(Route);
+import PageNotFound from '../components/PageNotFound';
+import ProtectedRoute from '../utils/ProtectedRoute';
 
 const App = () => {
   return (
-    <div className="container">
-      <UserProvider>
-        <Header subtitle="Chat application" />
-        <Routes>
-          <Route exact path="/" element={<Navigate to="/login" />} /> 
-          <Route path="/login" element={<Login />} />
-          <Route path="/rooms/:roomId" 
-            element={<ProtectedRoute element={<ChatRoom />} />} />
-          <Route path="/rooms" 
-            element={<ProtectedRoute element={ <Rooms />} />} />
-          <Route path="/*" element={<Navigate to="/login" />} />
-        </Routes>
-      </UserProvider>
-    </div>
+    <Routes>
+      <Route path="/" element={<Layout />} >
+        <Route path="/" element={<Home />} />
+        <Route path="login" element={<Login />} />
+        <Route path='*' element={<PageNotFound />}/>
+
+        {/* Protected routes */}
+        <Route element={<ProtectedRoute />}>
+          <Route path="rooms" element={<Rooms />} />
+          <Route path="rooms/:roomId" element={<ChatRoom />} />
+        </Route>
+      </Route>
+    </Routes>
   );
 };
 

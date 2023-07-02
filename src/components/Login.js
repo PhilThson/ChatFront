@@ -1,21 +1,19 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import { BASE_API_URL } from '../settings/constants';
-import { UserDataContext } from '../context/UserDataContext';
-import ValidationMessage from './ValidationMessage';
+import WarningMessage from '../utils/WarningMessage';
+import usePostRequest from '../hooks/usePostRequest';
+import LoadingIndicator from '../utils/LoadingIndicator';
+import loadingStatusDict from '../helpers/loadingStatusDict';
+import useAuth from '../hooks/useAuth';
 
 const Login = () => {
-  const initValue = {
-    username: '',
-    password: ''
-  };
-
   const navigate = useNavigate();
-  const [userCreds, setUserCreds] = useState(initValue);
+  const [userCreds, setUserCreds] = useState({ username:'', password:''});
   const [alertMessage, setAlertMessage] = useState('');
-  const { setUserContext } = useContext(UserDataContext);
+  const { setUserContext } = useAuth();
   const [searchParams] = useSearchParams();
+  const { post, loadingState } = usePostRequest(`${BASE_API_URL}user/authenticate`);
 
   useEffect(() => {
     const alert = searchParams.get('alert');
@@ -33,11 +31,7 @@ const Login = () => {
     e.preventDefault();
 
     try {
-      const response = await axios.post(`${BASE_API_URL}user/authenticate`, {
-        Username: userCreds.username,
-        Password: userCreds.password
-      });
-      const { jwtToken, refreshToken } = response.data;
+      const { jwtToken, refreshToken } = await post(userCreds);
       setUserContext({ 
         name: userCreds.username,
         jwtToken: jwtToken,
@@ -51,7 +45,8 @@ const Login = () => {
 
   return (
     <>
-      {alertMessage && <ValidationMessage message={alertMessage} />}
+      {alertMessage && <WarningMessage message={alertMessage} />}
+      {loadingState === loadingStatusDict.isLoading && <LoadingIndicator />}
       <form onSubmit={handleLogin}>
         <div className='mt-3 mb-3'>
           <div className='row'>

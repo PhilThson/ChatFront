@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import { BASE_HUB_URL } from '../settings/constants';
 import { HubConnectionBuilder } from '@microsoft/signalr';
 import { UserDataContext } from '../context/UserDataContext';
-import ValidationMessage from './ValidationMessage';
+import ValidationMessage from '../utils/WarningMessage';
 
 const ChatRoom = () => {
   const [message, setMessage] = useState('');
@@ -47,8 +47,6 @@ const ChatRoom = () => {
     e.preventDefault();
 
       const newMessage = {
-        //content: content,
-        //username: user.name
         roomId: 1,
         message: message,
         username: userData.name

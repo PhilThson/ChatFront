@@ -1,4 +1,4 @@
-import logo from "./GloboLogo.png";
+import logo from "../main-page/GloboLogo.png";
 import React from 'react';
 
 const Header = ({ subtitle }) => (

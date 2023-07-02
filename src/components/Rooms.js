@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import loadingStatusDict from '../helpers/loadingStatusDict';
-import LoadingIndicator from './LoadingIndicator';
+import LoadingIndicator from '../utils/LoadingIndicator';
 import useRooms from '../hooks/useRooms';
 import { useNavigate } from 'react-router-dom';
 import { UserDataContext } from '../context/UserDataContext';
