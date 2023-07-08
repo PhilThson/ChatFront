@@ -9,8 +9,8 @@ const ProtectedRoute = () => {
   return (
     userData?.name
       ? <Outlet /> //Outlet reprezentuje wszystkie komponenty dzieci
-      : <Navigate to="/login?alert=unauthorized" state={{ from: location }} replace />
-      // podmienienie historii przeglądania uytkownika na poprzednią - zaadna lokacje
+      : <Navigate to="/login?alert=unauthenticated" state={{ from: location }} replace />
+      // podmienienie historii przeglądania uzytkownika na poprzednią - zadana lokacje
       // bo w rzeczywistosci nastąpiło przekierowanie do strony logowania
   );
 }

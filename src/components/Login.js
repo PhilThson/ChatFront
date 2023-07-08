@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useSearchParams, useNavigate } from 'react-router-dom';
+import { useSearchParams, useNavigate, useLocation } from 'react-router-dom';
 import { BASE_API_URL } from '../settings/constants';
 import WarningMessage from '../utils/WarningMessage';
 import usePostRequest from '../hooks/usePostRequest';
@@ -9,10 +9,15 @@ import useAuth from '../hooks/useAuth';
 
 const Login = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from?.pathname || "/";
+  
   const [userCreds, setUserCreds] = useState({ username:'', password:''});
   const [alertMessage, setAlertMessage] = useState('');
-  const { setUserContext } = useAuth();
   const [searchParams] = useSearchParams();
+  const [errorMsg, setErrorMsg] = useState('');
+  
+  const { setUserContext } = useAuth();
   const { post, loadingState } = usePostRequest(`${BASE_API_URL}user/authenticate`);
 
   useEffect(() => {
@@ -21,6 +26,10 @@ const Login = () => {
       setAlertMessage("Proszę się zalogować");
     }
   }, [searchParams, setAlertMessage]);
+
+  // useEffect(() => {
+  //   setErrorMsg('');
+  // }, userCreds);
 
   const onChange = (e) => {
     e.preventDefault();
@@ -37,9 +46,11 @@ const Login = () => {
         jwtToken: jwtToken,
         refreshToken: refreshToken
       });
-      navigate('/rooms');
+      //przekierowanie uzytkownika do strony z której przyszedł
+      navigate(from, { replace: true });
     } catch (error) {
       console.error(error);
+      //setErrorMsg(error);
     }
   };
 
