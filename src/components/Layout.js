@@ -9,9 +9,7 @@ const Layout = () => {
     <div className="layout">
       <Header subtitle="Chat application" />
       <div className="general-container">
-        <div className="sidebar">
-          <Sidebar />
-        </div>
+        <Sidebar />
         <div className="content">
           <Outlet />
         </div>

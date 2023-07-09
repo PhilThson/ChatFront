@@ -4,6 +4,7 @@ import { BASE_HUB_URL } from '../settings/constants';
 import { HubConnectionBuilder } from '@microsoft/signalr';
 import { UserDataContext } from '../context/UserDataContext';
 import ValidationMessage from '../utils/WarningMessage';
+import '../styles/ChatRoom.css';
 
 const ChatRoom = () => {
   const [message, setMessage] = useState('');
@@ -76,15 +77,17 @@ const ChatRoom = () => {
         />
         <button type="submit">Send</button>
       </form>
-      <ul className='list-group'>
-        {messages.map((msg, index) => (
-          <li key={index} className={
-            `${msg.username.toLowerCase() === 'system' 
-            ? "fst-italic" : ""}`}>
-            <strong>{msg.username}</strong>: {msg.message}
-          </li>
-        ))}
-      </ul>
+      <div className="messages">
+        <ul className='list-group'>
+          {messages.map((msg, index) => (
+            <li key={index} className={
+              `${msg.username.toLowerCase() === 'system' 
+              ? "fst-italic" : ""}`}>
+              <strong>{msg.username}</strong>: {msg.message}
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
   );
 };
