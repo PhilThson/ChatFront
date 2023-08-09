@@ -1,4 +1,4 @@
-import logo from "../main-page/GloboLogo.png";
+import logo from "../main-page/ChatIcon.png";
 import React from 'react';
 
 const Header = ({ subtitle }) => (

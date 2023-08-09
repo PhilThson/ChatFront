@@ -69,13 +69,19 @@ const ChatRoom = () => {
       <h2>Welcome, {userData.name}!</h2>
       <h4>Room {roomId}</h4>
       <form onSubmit={handleSendMessage}>
-        <input
-          type="text"
-          placeholder="Enter your message"
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-        />
-        <button type="submit">Send</button>
+        <div className='input-group mb-3'>
+          <input
+            type="text"
+            placeholder="Enter your message"
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+          />
+          <button 
+            className='btn btn-primary' 
+            type="submit">
+              Send
+          </button>
+        </div>
       </form>
       <div className="messages">
         <ul className='list-group'>

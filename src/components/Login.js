@@ -23,7 +23,7 @@ const Login = () => {
   useEffect(() => {
     const alert = searchParams.get('alert');
     if (alert) {
-      setAlertMessage("Proszę się zalogować");
+      setAlertMessage("Please log in");
     }
   }, [searchParams, setAlertMessage]);
 
