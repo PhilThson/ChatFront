@@ -1,12 +1,12 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
+import React from "react";
+import ReactDOM from "react-dom/client";
 import { BrowserRouter as Router } from "react-router-dom";
-import './index.css';
-import App from './main-page/App';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import { UserProvider } from './context/UserDataContext';
+import App from "./main-page/App";
+// import 'bootstrap/dist/css/bootstrap.min.css';
+import { UserProvider } from "./context/UserDataContext";
+import "./sass/styles.scss";
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
+const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <Router>

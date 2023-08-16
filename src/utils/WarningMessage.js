@@ -1,7 +1,11 @@
 const ValidationMessage = ({ message }) => {
   return (
-    <div className='alert alert-warning' role='alert'>
-      <h3 className='fst-italic text-warning'>{ message }</h3>
+    <div className="row">
+      <div className="column small-12">
+        <div className="alert-warning" role="alert">
+          <h3 className="fst-italic text-warning">{message}</h3>
+        </div>
+      </div>
     </div>
   );
 };

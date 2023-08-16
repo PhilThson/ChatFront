@@ -1,0 +1,46 @@
+@for $i from 1 through 12 {
+  $w: (calc($i / 12)) * 100%;
+  .medium-#{$i} {
+    flex-basis: $w;
+  }
+}
+
+header {
+  border-radius: 0.5rem 0.5rem 0.5rem 0;
+}
+
+header .column {
+  margin-bottom: 0;
+}
+
+main {
+  flex-direction: row;
+}
+
+nav {
+  width: fit-content;
+  height: 100%;
+  margin-right: 0.2rem;
+  align-items: flex-start;
+}
+
+nav ul {
+  display: flex;
+  flex-direction: column;
+}
+
+nav #title {
+  display: none;
+}
+
+nav #icon {
+  display: flex;
+}
+
+nav ul.open #title {
+  display: block;
+}
+
+nav #icon {
+  display: block;
+}

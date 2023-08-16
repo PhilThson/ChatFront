@@ -1,0 +1,14 @@
+@for $i from 1 through 12 {
+  $w: (calc($i / 12)) * 100%;
+  .large-#{$i} {
+    flex-basis: $w;
+  }
+}
+
+nav ul.open li {
+  display: flex;
+  align-items: center;
+}
+nav ul.open #title {
+  padding-left: 0.5rem;
+}

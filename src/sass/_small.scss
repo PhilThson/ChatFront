@@ -1,0 +1,167 @@
+.layout {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  margin: 10px;
+}
+
+main {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+@for $i from 1 through 12 {
+  $w: (calc($i / 12)) * 100%;
+  .small-#{$i} {
+    flex-basis: $w;
+  }
+}
+
+.limited {
+  max-width: 1140px;
+  margin: auto;
+}
+
+.column {
+  padding: 0 2vw;
+  margin: 0 0 0.75rem 0;
+}
+
+header {
+  background: linear-gradient($primaryColor, $secondaryColor);
+  border-radius: 0.5rem 0.5rem 0 0;
+}
+
+header img {
+  height: 150px;
+}
+
+.subtitle {
+  font-style: italic;
+  font-size: x-large;
+  color: coral;
+  align-self: center;
+  text-align: center;
+}
+
+.general-container {
+  display: flex;
+  margin: 0;
+  height: 100%;
+}
+
+.content {
+  flex: 1;
+  margin: 5px 0;
+  height: 100%;
+}
+
+nav {
+  background-color: $primaryBackgroundColor;
+  border-radius: 0 0 0.5rem 0.5rem;
+  display: flex;
+  flex-direction: column;
+  // transition: width 0.5s ease;
+  // overflow: hidden;
+  // align-items: flex-start;
+}
+
+.menu-icon {
+  padding: 0.3rem 0;
+  align-self: center;
+  cursor: pointer;
+}
+
+nav ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  display: none;
+}
+
+nav ul.open {
+  display: flex;
+}
+
+nav li {
+  padding: 0.8rem 1rem;
+  border-radius: 0.5rem;
+  text-align: center;
+  //transition: padding 0.3s ease, background-color 0.3s ease;
+}
+
+nav li.active {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+nav li:hover {
+  cursor: pointer;
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+nav #icon {
+  display: none;
+}
+
+footer {
+  margin-top: auto;
+  display: flex;
+  justify-content: space-between;
+  border-top: 1px solid $primaryBorderColor;
+  padding: 10px;
+}
+
+.messages .list-group {
+  list-style: none;
+}
+
+.primaryButton {
+  color: #fff;
+  border: solid 1px $primaryBorderColor;
+  border-radius: 5px;
+  width: 100%;
+  font-family: Helvetica, Arial, sans-serif;
+  text-align: center;
+  background-color: $primaryColor;
+  padding: 10px;
+  cursor: pointer;
+}
+
+.primaryButton:hover {
+  background-color: $secondaryColor;
+}
+
+.alert-warning {
+  background-color: $warningBackgroundColor;
+  border-radius: 5px;
+  padding: 10px;
+  font-style: italic;
+}
+
+form .column {
+  display: flex;
+  flex-direction: column;
+}
+
+form input {
+  padding: 0.5rem;
+  border: solid 1px $primaryBorderColor;
+  border-radius: 5px;
+}
+
+form input:focus {
+  outline: none;
+  border: solid 2px $primaryColor;
+}
+
+// input[type="text"]:focus {
+//   outline: none;
+//   box-shadow: 0px 0px 5px #61C5FA;
+//   border:1px solid #5AB0DB;
+// }

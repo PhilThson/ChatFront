@@ -1,13 +1,12 @@
-import React, { useState, useEffect, useRef, useContext } from 'react';
+import React, { useState, useEffect, useRef, useContext } from "react";
 import { useParams } from "react-router-dom";
-import { BASE_HUB_URL } from '../settings/constants';
-import { HubConnectionBuilder } from '@microsoft/signalr';
-import { UserDataContext } from '../context/UserDataContext';
-import ValidationMessage from '../utils/WarningMessage';
-import '../styles/ChatRoom.css';
+import { BASE_HUB_URL } from "../settings/constants";
+import { HubConnectionBuilder } from "@microsoft/signalr";
+import { UserDataContext } from "../context/UserDataContext";
+import ValidationMessage from "../utils/WarningMessage";
 
 const ChatRoom = () => {
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
   const { roomId } = useParams();
   const { userData } = useContext(UserDataContext);
@@ -17,16 +16,20 @@ const ChatRoom = () => {
     if (!isNaN(parseInt(roomId))) {
       const startHubConnection = async () => {
         hubConnectionRef.current = new HubConnectionBuilder()
-          .withUrl(BASE_HUB_URL, { 
-            accessTokenFactory: () => userData.jwtToken
+          .withUrl(BASE_HUB_URL, {
+            accessTokenFactory: () => userData.jwtToken,
           })
           .withAutomaticReconnect()
           .build();
-  
+
         await hubConnectionRef.current.start();
-  
-        hubConnectionRef.current.on('ReceiveMessage', (newMsg) => addMessageToList(newMsg));
-        hubConnectionRef.current.on('SystemMessage', (newMsg) => addMessageToList(newMsg));
+
+        hubConnectionRef.current.on("ReceiveMessage", (newMsg) =>
+          addMessageToList(newMsg)
+        );
+        hubConnectionRef.current.on("SystemMessage", (newMsg) =>
+          addMessageToList(newMsg)
+        );
       };
       startHubConnection();
     } else {
@@ -34,10 +37,10 @@ const ChatRoom = () => {
         hubConnectionRef.current.stop();
       }
     }
-  }, [roomId]);
+  }, [roomId, userData.jwtToken]);
 
-  if (roomId === 'undefined' || roomId === 'null') {
-    return <ValidationMessage message={'Nie udało się określić pokoju'}/>
+  if (roomId === "undefined" || roomId === "null") {
+    return <ValidationMessage message={"Nie udało się określić pokoju"} />;
   }
 
   const addMessageToList = (receivedMessage) => {
@@ -47,21 +50,22 @@ const ChatRoom = () => {
   const handleSendMessage = async (e) => {
     e.preventDefault();
 
-      const newMessage = {
-        roomId: 1,
-        message: message,
-        username: userData.name
-      }
-      
-      hubConnectionRef.current.invoke('SendMessage', newMessage)
-        .then(() => {
-          setMessage('');
-        })
-        .catch((error) => {
-          console.error('Error sending message:', error);
-        });
+    const newMessage = {
+      roomId: 1,
+      message: message,
+      username: userData.name,
+    };
 
-      hubConnectionRef.current.invoke('AuthorizedResource');
+    hubConnectionRef.current
+      .invoke("SendMessage", newMessage)
+      .then(() => {
+        setMessage("");
+      })
+      .catch((error) => {
+        console.error("Error sending message:", error);
+      });
+
+    hubConnectionRef.current.invoke("AuthorizedResource");
   };
 
   return (
@@ -69,26 +73,27 @@ const ChatRoom = () => {
       <h2>Welcome, {userData.name}!</h2>
       <h4>Room {roomId}</h4>
       <form onSubmit={handleSendMessage}>
-        <div className='input-group mb-3'>
+        <div className="input-group mb-3">
           <input
             type="text"
             placeholder="Enter your message"
             value={message}
             onChange={(e) => setMessage(e.target.value)}
           />
-          <button 
-            className='btn btn-primary' 
-            type="submit">
-              Send
+          <button className="btn btn-primary" type="submit">
+            Send
           </button>
         </div>
       </form>
       <div className="messages">
-        <ul className='list-group'>
+        <ul className="list-group">
           {messages.map((msg, index) => (
-            <li key={index} className={
-              `${msg.username.toLowerCase() === 'system' 
-              ? "fst-italic" : ""}`}>
+            <li
+              key={index}
+              className={`${
+                msg.username.toLowerCase() === "system" ? "fst-italic" : ""
+              }`}
+            >
               <strong>{msg.username}</strong>: {msg.message}
             </li>
           ))}
