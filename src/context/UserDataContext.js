@@ -1,9 +1,9 @@
-import React, { createContext, useState } from 'react';
+import React, { createContext, useState } from "react";
 
 export const UserDataContext = createContext({
-  name: 'Guest',
-  jwtToken: '',
-  refreshToken: ''
+  email: "Guest",
+  jwtToken: "",
+  refreshToken: "",
 });
 
 export const UserProvider = ({ children }) => {
@@ -18,5 +18,9 @@ export const UserProvider = ({ children }) => {
     setUserContext,
   };
 
-  return <UserDataContext.Provider value={value}>{children}</UserDataContext.Provider>;
+  return (
+    <UserDataContext.Provider value={value}>
+      {children}
+    </UserDataContext.Provider>
+  );
 };

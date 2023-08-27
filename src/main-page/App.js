@@ -3,7 +3,7 @@ import { Route, Routes } from "react-router-dom";
 import Layout from "../components/Layout";
 import Home from "../components/Home";
 import Login from "../components/Login";
-import ChatRoom from "../components/ChatRoom";
+import ChatRoom from "../components/ChatRoom/ChatRoom";
 import Rooms from "../components/Rooms";
 import Users from "../components/Users";
 import PageNotFound from "../components/PageNotFound";

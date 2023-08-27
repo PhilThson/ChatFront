@@ -1,4 +1,4 @@
-const ValidationMessage = ({ message }) => {
+const WarningMessage = ({ message }) => {
   return (
     <div className="row">
       <div className="column small-12">
@@ -10,4 +10,4 @@ const ValidationMessage = ({ message }) => {
   );
 };
 
-export default ValidationMessage;
+export default WarningMessage;

@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useSearchParams, useNavigate, useLocation } from "react-router-dom";
-import { BASE_API_URL } from "../settings/constants";
+import { USER_AUTHENTICATE, LOGIN_ALERT_MESSAGE } from "../settings/constants";
 import WarningMessage from "../utils/WarningMessage";
-import usePostRequest from "../hooks/usePostRequest";
+import useRequest from "../hooks/useRequest";
 import LoadingIndicator from "../utils/LoadingIndicator";
 import loadingStatusDict from "../helpers/loadingStatusDict";
 import useAuth from "../hooks/useAuth";
@@ -12,26 +12,19 @@ const Login = () => {
   const location = useLocation();
   const from = location.state?.from?.pathname || "/";
 
-  const [userCreds, setUserCreds] = useState({ username: "", password: "" });
+  const [userCreds, setUserCreds] = useState({ email: "", password: "" });
   const [alertMessage, setAlertMessage] = useState("");
   const [searchParams] = useSearchParams();
-  const [errorMsg, setErrorMsg] = useState("");
 
   const { setUserContext } = useAuth();
-  const { post, loadingState } = usePostRequest(
-    `${BASE_API_URL}user/authenticate`
-  );
+  const { request, loadingState } = useRequest();
 
   useEffect(() => {
     const alert = searchParams.get("alert");
     if (alert) {
-      setAlertMessage("Please log in");
+      setAlertMessage(LOGIN_ALERT_MESSAGE);
     }
   }, [searchParams, setAlertMessage]);
-
-  // useEffect(() => {
-  //   setErrorMsg('');
-  // }, userCreds);
 
   const onChange = (e) => {
     e.preventDefault();
@@ -42,17 +35,21 @@ const Login = () => {
     e.preventDefault();
 
     try {
-      const { jwtToken, refreshToken } = await post(userCreds);
+      const { jwtToken, refreshToken } = await request(
+        USER_AUTHENTICATE,
+        "POST",
+        userCreds
+      );
       setUserContext({
-        name: userCreds.username,
+        email: userCreds.email,
         jwtToken: jwtToken,
         refreshToken: refreshToken,
       });
+      console.log("User came from: " + from);
       //przekierowanie uzytkownika do strony z której przyszedł
       navigate(from, { replace: true });
     } catch (error) {
       console.error(error);
-      //setErrorMsg(error);
     }
   };
 
@@ -63,13 +60,13 @@ const Login = () => {
       <form onSubmit={handleLogin}>
         <div className="row">
           <div className="column small-12 medium-6">
-            <label className="form-label">Name:</label>
+            <label htmlFor="email">Email:</label>
             <input
-              id="username"
+              id="email"
               type="text"
-              className="form-control"
-              placeholder="Username"
-              value={userCreds.username}
+              placeholder="Email"
+              autoComplete="email"
+              value={userCreds.email}
               onChange={onChange}
               required
             />
@@ -77,12 +74,12 @@ const Login = () => {
         </div>
         <div className="row">
           <div className="column small-12 medium-6">
-            <label className="form-label">Password:</label>
+            <label htmlFor="password">Password:</label>
             <input
               id="password"
               type="password"
-              className="form-control"
               placeholder="Password"
+              autoComplete="current-password"
               value={userCreds.password}
               onChange={onChange}
             />
