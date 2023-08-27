@@ -10,7 +10,6 @@ const Users = (props) => {
   useEffect(() => {
     const fetchData = async () => {
       let userIds = props.participants.map((p) => p.userId).join(",");
-      console.log("Room users ids: " + userIds);
       let uri = `${BASE_AUTH_URL}users`;
       if (userIds.length) {
         uri = uri + `?ids=${userIds}`;
@@ -26,7 +25,6 @@ const Users = (props) => {
 
   return (
     <article>
-      <h3>Users List</h3>
       {props.users?.length ? (
         <ul>
           {props.users.map((user) => (

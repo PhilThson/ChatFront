@@ -84,8 +84,8 @@ const ChatRoom = () => {
 
   return (
     <div className="chatRoom">
-      <h2>Welcome, {userData.name}!</h2>
-      <h4>Room {roomId}</h4>
+      <h2>Welcome, {userData.email}!</h2>
+      <h3>Room: '{room.name}'</h3>
       <div className="row">
         <div className="column small-12 medium-6">
           <Messages
@@ -112,6 +112,7 @@ const ChatRoom = () => {
       </div>
       <div className="row">
         <div className="column small-12 medium-6">
+          <h3>Room participants:</h3>
           <Users
             users={users}
             participants={room.participants}

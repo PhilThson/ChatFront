@@ -45,8 +45,6 @@ const Login = () => {
         jwtToken: jwtToken,
         refreshToken: refreshToken,
       });
-      console.log("User came from: " + from);
-      //przekierowanie uzytkownika do strony z której przyszedł
       navigate(from, { replace: true });
     } catch (error) {
       console.error(error);

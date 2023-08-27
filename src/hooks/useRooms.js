@@ -7,10 +7,8 @@ const useRooms = () => {
   const { request, loadingState } = useRequest();
 
   useEffect(() => {
-    console.log("Inside useRooms");
     const fetchRooms = async () => {
       const rooms = await request(`${BASE_CHATAPI_URL}room`);
-      console.log("Found " + rooms.length + " rooms");
       setRooms(rooms);
     };
     fetchRooms();

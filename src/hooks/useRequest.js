@@ -10,7 +10,6 @@ const useRequest = () => {
     async (url, method, content) => {
       setLoadingState(loadingStatusDict.isLoading);
       try {
-        console.log("Sending HTTP request");
         const headers = {
           Accept: "application/json",
           "Content-Type": "application/json",
@@ -25,11 +24,6 @@ const useRequest = () => {
         if (content) {
           body = JSON.stringify(content);
         }
-
-        console.log("Url: " + url);
-        console.log("Method: " + method);
-        console.log("Content");
-        console.log(content);
 
         const response = await fetch(url, {
           method: method,
