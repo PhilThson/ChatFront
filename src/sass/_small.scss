@@ -67,8 +67,8 @@ nav {
   border-radius: 0 0 0.5rem 0.5rem;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
   // transition: width 0.5s ease;
-  // overflow: hidden;
   // align-items: flex-start;
 }
 
@@ -82,11 +82,13 @@ nav ul {
   list-style-type: none;
   margin: 0;
   padding: 0;
-  display: none;
+  display: flex;
+  max-height: 0;
+  transition: max-height 0.7s;
 }
 
 nav ul.open {
-  display: flex;
+  max-height: 3rem;
 }
 
 nav li {
