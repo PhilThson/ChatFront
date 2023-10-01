@@ -1,29 +1,32 @@
-import React, { Component } from "react";
+import React, { Component } from 'react'
 
-class ErrorBoundary extends Component {
+export class ErrorBoundary extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      hasError: false,
-      errorMessage: "",
+      hasError: false
     };
   }
 
-  static getDerivedStateFromError(error) {
-    return { hasError: true, errorMessage: error.message };
+  componentDidCatch(error, errorInfo) {
+    console.error('Error caught by ErrorBoundary:', error, errorInfo);
+    this.setState({ hasError: true });
   }
 
   render() {
+    const content = (
+      <div className="errorStyle">
+        <h1 className="errorMessageStyle">Something went wrong!</h1>
+        <p>We apologize for the inconvenience.</p>
+      </div>
+    );
+
     if (this.state.hasError) {
-      return (
-        <div style={{ color: "red", textAlign: "center", padding: "20px" }}>
-          <p>An error occurred: {this.state.errorMessage}</p>
-        </div>
-      );
+      return content;
     }
 
     return this.props.children;
   }
 }
 
-export default ErrorBoundary;
+export default ErrorBoundary
