@@ -24,6 +24,7 @@ const ChatRoom = () => {
   const hubConnectionRef = useRef(null);
 
   useEffect(() => {
+    console.log("Inside ChatRoom, " + roomId);
     if (!isNaN(parseInt(roomId))) {
       const startHubConnection = async () => {
         hubConnectionRef.current = new HubConnectionBuilder()
@@ -78,12 +79,10 @@ const ChatRoom = () => {
       .catch((error) => {
         console.error("Error sending message:", error);
       });
-
-    //hubConnectionRef.current.invoke("AuthorizedResource");
   };
 
   return (
-    <div className="chatRoom">
+    <div className="chat-room">
       <h2>Welcome, {userData.email}!</h2>
       <h3>Room: '{room.name}'</h3>
       <div className="row">

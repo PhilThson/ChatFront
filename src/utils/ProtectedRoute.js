@@ -6,8 +6,8 @@ const ProtectedRoute = () => {
   const { userData } = useAuth();
   const location = useLocation();
   console.log("Inside ProtectedRoute");
-  console.log("Email: " + userData?.email);
-  console.log("JwtToken: " + userData?.jwtToken);
+  // console.log("Email: " + userData?.email);
+  // console.log("JwtToken: " + userData?.jwtToken);
 
   return userData?.email ? (
     <Outlet /> //Outlet reprezentuje wszystkie komponenty dzieci

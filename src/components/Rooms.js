@@ -2,35 +2,27 @@ import React from "react";
 import loadingStatusDict from "../helpers/loadingStatusDict";
 import LoadingIndicator from "../utils/LoadingIndicator";
 import useRooms from "../hooks/useRooms";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 
 const Rooms = () => {
-  const navigate = useNavigate();
   const { userData } = useAuth();
   const { allRooms, loadingState } = useRooms();
 
   if (loadingState !== loadingStatusDict.loaded)
     return <LoadingIndicator loadingState={loadingState} />;
 
-  const handleJoinRoom = (id) => {
-    console.log("Joining room: " + id);
-    navigate(`/rooms/${id}`);
-  };
-
   return (
     <>
-      <h3>Select a chat room:</h3>
+      <h2>Select a chat room:</h2>
       <p>Logged in as: {userData?.email}</p>
-      <ul className="list-group">
+      <ul className="list-group rooms">
         {allRooms.map((room) => (
-          <button
-            className="list-group-item list-group-item-action"
-            key={room.id}
-            onClick={() => handleJoinRoom(room.id)}
-          >
-            {room.name}
-          </button>
+          <li key={room.id} className="room-item">
+            <Link to={room.id.toString()}>
+              <h3>{room.name}</h3>
+            </Link>
+          </li>
         ))}
       </ul>
     </>

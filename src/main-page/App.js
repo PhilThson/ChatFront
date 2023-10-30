@@ -1,30 +1,36 @@
-// import './App.css';
-import { Route, Routes } from "react-router-dom";
+import {
+  createBrowserRouter, RouterProvider
+} from "react-router-dom";
 import Layout from "../components/Layout";
 import Home from "../components/Home";
 import Login from "../components/Login";
 import ChatRoom from "../components/ChatRoom/ChatRoom";
 import Rooms from "../components/Rooms";
-import Users from "../components/Users";
 import PageNotFound from "../components/PageNotFound";
 import ProtectedRoute from "../utils/ProtectedRoute";
 
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <Layout />,
+    errorElement: <PageNotFound />,
+    children: [
+      { index: true, element: <Home /> },
+      { path: "login", element: <Login /> },
+      {
+        element: <ProtectedRoute />,
+        children: [
+          { path: "rooms", element: <Rooms /> },
+          { path: "rooms/:roomId", element: <ChatRoom /> },
+        ]
+      }
+    ]
+  }
+]);
+
 const App = () => {
   return (
-    <Routes>
-      <Route path="/" element={<Layout />}>
-        <Route path="/" element={<Home />} />
-        <Route path="login" element={<Login />} />
-        <Route path="*" element={<PageNotFound />} />
-
-        {/* Protected routes */}
-        <Route element={<ProtectedRoute />}>
-          <Route path="rooms" element={<Rooms />} />
-          <Route path="rooms/:roomId" element={<ChatRoom />} />
-          <Route path="users" element={<Users />} />
-        </Route>
-      </Route>
-    </Routes>
+    <RouterProvider router={router} />
   );
 };
 
