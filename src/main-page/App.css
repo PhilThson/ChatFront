@@ -1,6 +1,10 @@
 .App {
+  display: flex;
   text-align: center;
+  align-items: center;
+  justify-content: center;
 }
+
 
 .App-logo {
   height: 40vmin;
@@ -35,4 +39,20 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+.logo {
+  height: 150px;
+}
+
+.subtitle {
+  font-style: italic;
+  font-size: x-large;
+  color: coral;
+}
+
+/*Overload bootstrap styles*/
+input.form-control:focus,
+.form-select:focus {
+    box-shadow: none;
 }
