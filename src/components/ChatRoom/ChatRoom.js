@@ -4,6 +4,7 @@ import {
   BASE_HUB_URL,
   SEND_MESSAGE_EVENT,
   RECEIVE_MESSAGE_EVENT,
+  SYSTEM_MESSAGE_EVENT
 } from "../../settings/constants";
 import { HubConnectionBuilder } from "@microsoft/signalr";
 import useAuth from "../../hooks/useAuth";
@@ -24,7 +25,6 @@ const ChatRoom = () => {
   const hubConnectionRef = useRef(null);
 
   useEffect(() => {
-    console.log("Inside ChatRoom, " + roomId);
     if (!isNaN(parseInt(roomId))) {
       const startHubConnection = async () => {
         hubConnectionRef.current = new HubConnectionBuilder()
@@ -36,12 +36,17 @@ const ChatRoom = () => {
 
         await hubConnectionRef.current.start();
 
-        hubConnectionRef.current.on(SEND_MESSAGE_EVENT, (newMsg) =>
-          addMessageToList(newMsg)
-        );
-        hubConnectionRef.current.on(RECEIVE_MESSAGE_EVENT, (newMsg) =>
-          addMessageToList(newMsg)
-        );
+        hubConnectionRef.current.on(RECEIVE_MESSAGE_EVENT, (receivedMsg) => {
+          console.log("ReceiveMessage event:");
+          console.log(receivedMsg);
+          addMessageToList(receivedMsg);
+        });
+
+        hubConnectionRef.current.on(SYSTEM_MESSAGE_EVENT, (receivedMsg) => {
+          console.log("SystemMessage event:");
+          console.log(receivedMsg);
+          addMessageToList(receivedMsg);
+        });
       };
       startHubConnection();
     } else {
@@ -50,6 +55,21 @@ const ChatRoom = () => {
       }
     }
   }, [userData?.jwtToken, roomId]);
+
+  useEffect(() => {
+    if (room?.messages?.length > 0) {
+      let initMessages = room.messages.map(m => {
+        const participant = room.participants?.find(p => p.id === m.senderId);
+        const user = users?.find(u => u.id === participant.userId);
+        return {
+          id: m.id,
+          content: m.content,
+          username: user ? user.name : "Unknown user",
+        };
+      });
+      setMessages(initMessages);
+    }
+  }, [room?.messages, room?.participants, users]);
 
   if (isNaN(parseInt(roomId))) {
     return <ValidationMessage message={"Can't resolve room identifier"} />;
@@ -66,9 +86,9 @@ const ChatRoom = () => {
     e.preventDefault();
 
     const newMessage = {
-      roomId: roomId,
+      roomId: +roomId,
       content: message,
-      username: userData.name,
+      username: userData.email,
     };
 
     hubConnectionRef.current
@@ -89,10 +109,6 @@ const ChatRoom = () => {
         <div className="column small-12 medium-6">
           <Messages
             messages={messages}
-            users={users}
-            participants={room.participants}
-            roomMessages={room.messages}
-            setMessages={setMessages}
           />
           <form onSubmit={handleSendMessage}>
             <div>

@@ -7,7 +7,6 @@ const useRoom = (roomId) => {
   const { request, loadingState } = useRequest();
 
   useEffect(() => {
-    console.log("Inside use room, " + roomId);
     const fetchRoom = async () => {
       const roomData = await request(
         `${BASE_CHATAPI_URL}room/${parseInt(roomId)}`,
