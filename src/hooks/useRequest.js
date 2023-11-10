@@ -11,7 +11,7 @@ const useRequest = () => {
       setLoadingState(loadingStatusDict.isLoading);
       try {
         const headers = {
-          Accept: "application/json",
+          "Accept": "application/json",
           "Content-Type": "application/json",
         };
         if (userData?.jwtToken) {

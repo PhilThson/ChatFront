@@ -1,3 +1,4 @@
 # ChatFront
-<img width="1287" alt="Zrzut ekranu 2023-08-9 o 18 13 22" src="https://github.com/PhilThson/ChatFront/assets/63736928/c1d8ff7f-e90c-4ba0-8858-beac94542c1c">
-<img width="1287" alt="Zrzut ekranu 2023-08-9 o 18 15 45" src="https://github.com/PhilThson/ChatFront/assets/63736928/0c693349-56a5-459b-b8db-a3aa8ef2cea3">
+
+<img width="1006" alt="ReactChat_Login" src="https://github.com/PhilThson/ChatFront/assets/63736928/d487d0cc-c774-4fc1-abd8-3a5fdead9526">
+<img width="1055" alt="ReactChat_Chat" src="https://github.com/PhilThson/ChatFront/assets/63736928/122aa37b-7531-492b-bc1b-a4c19c10c4fc">
