@@ -1,4 +1,9 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  useCallback
+} from "react";
 import { useParams } from "react-router-dom";
 import {
   BASE_HUB_URL,
@@ -18,11 +23,15 @@ import useRoom from "../../hooks/useRoom";
 const ChatRoom = () => {
   const { roomId } = useParams();
   const { room, loadingState } = useRoom(roomId);
-  const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
   const [users, setUsers] = useState([]);
   const { userData } = useAuth();
   const hubConnectionRef = useRef(null);
+  const messageRef = useRef("");
+
+  const addMessageToList = useCallback((receivedMessage) => {
+    setMessages((prevMessages) => [...prevMessages, receivedMessage]);
+  }, [setMessages]);
 
   useEffect(() => {
     if (!isNaN(parseInt(roomId))) {
@@ -37,14 +46,10 @@ const ChatRoom = () => {
         await hubConnectionRef.current.start();
 
         hubConnectionRef.current.on(RECEIVE_MESSAGE_EVENT, (receivedMsg) => {
-          console.log("ReceiveMessage event:");
-          console.log(receivedMsg);
           addMessageToList(receivedMsg);
         });
 
         hubConnectionRef.current.on(SYSTEM_MESSAGE_EVENT, (receivedMsg) => {
-          console.log("SystemMessage event:");
-          console.log(receivedMsg);
           addMessageToList(receivedMsg);
         });
       };
@@ -54,7 +59,7 @@ const ChatRoom = () => {
         hubConnectionRef.current.stop();
       }
     }
-  }, [userData?.jwtToken, roomId]);
+  }, [userData?.jwtToken, roomId, addMessageToList]);
 
   useEffect(() => {
     if (room?.messages?.length > 0) {
@@ -62,7 +67,7 @@ const ChatRoom = () => {
         const participant = room.participants?.find(p => p.id === m.senderId);
         const user = users?.find(u => u.id === participant.userId);
         return {
-          id: m.id,
+          roomId: m.id,
           content: m.content,
           username: user ? user.name : "Unknown user",
         };
@@ -78,23 +83,19 @@ const ChatRoom = () => {
   if (loadingState !== loadingStatusDict.loaded)
     return <LoadingIndicator loadingState={loadingState} />;
 
-  const addMessageToList = (receivedMessage) => {
-    setMessages((prevMessages) => [...prevMessages, receivedMessage]);
-  };
-
   const handleSendMessage = async (e) => {
     e.preventDefault();
 
     const newMessage = {
       roomId: +roomId,
-      content: message,
+      content: messageRef.current.value,
       username: userData.email,
     };
 
     hubConnectionRef.current
       .invoke(SEND_MESSAGE_EVENT, newMessage)
       .then(() => {
-        setMessage("");
+        messageRef.current.value = "";
       })
       .catch((error) => {
         console.error("Error sending message:", error);
@@ -107,16 +108,13 @@ const ChatRoom = () => {
       <h3>Room: '{room.name}'</h3>
       <div className="row">
         <div className="column small-12 medium-6">
-          <Messages
-            messages={messages}
-          />
+          <Messages messages={messages} />
           <form onSubmit={handleSendMessage}>
             <div>
               <input
                 type="text"
                 placeholder="Enter your message"
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
+                ref={messageRef}
               />
               <button className="primaryButton" type="submit">
                 Send
